@@ -1,0 +1,58 @@
+plugins {
+	id 'eclipse'
+	id 'java-library'
+	id 'com.github.johnrengelman.shadow' version "8.1.1"
+}
+
+repositories {
+	mavenCentral()
+	
+	maven {
+		url 'https://m2.dv8tion.net/releases'
+	}
+}
+
+sourceCompatibility = 19
+targetCompatibility = 19
+
+dependencies {
+	shadow group: 'org.apache.commons', name: 'commons-text', version: '1.10.0'
+	shadow group: 'commons-io', name: 'commons-io', version: '2.14.0'
+	shadow group: 'commons-codec', name: 'commons-codec', version: '1.16.0'
+	shadow group: 'javax.activation', name: 'javax.activation-api', version: '1.2.0'
+}
+
+configurations.all {
+	resolutionStrategy {
+		
+	}
+}
+
+shadowJar {
+	mergeServiceFiles()
+	configurations = [project.configurations.shadow]
+	exclude 'META-INF/LICENSE'
+	exclude 'META-INF/LICENSE.txt'
+	exclude 'META-INF/LICENSsE.txt'
+	exclude 'META-INF/NOTICE'
+	exclude 'META-INF/NOTICE.txt'
+	exclude 'META-INF/DEPENDENCIES'
+	exclude 'LICENSE.txt'
+}
+
+jar {
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+	manifest {
+		attributes(
+			'Class-Path': configurations.runtimeClasspath.collect { it.getName() }.join(' '),
+			'MixinConfigs': 'mixins.json',
+			'Specification-Version': 8.0,
+			'Multi-Release': 'true'
+		)
+	}
+	from {
+		configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+	} {
+		exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+	}
+}
