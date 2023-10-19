@@ -1,6 +1,7 @@
 plugins {
 	id 'eclipse'
 	id 'java-library'
+	id 'maven-publish'
 	id 'com.github.johnrengelman.shadow' version "8.1.1"
 }
 
@@ -14,6 +15,9 @@ repositories {
 
 sourceCompatibility = 19
 targetCompatibility = 19
+
+group = 'com.thegamecommunity'
+version = "${project.version}"
 
 dependencies {
 	shadow group: 'org.apache.commons', name: 'commons-text', version: '1.10.0'
@@ -40,6 +44,11 @@ shadowJar {
 	exclude 'LICENSE.txt'
 }
 
+task sourcesJar(type: Jar) {
+    archiveClassifier.set("sources")
+    from sourceSets.main.allSource
+}
+
 jar {
 	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 	manifest {
@@ -55,4 +64,37 @@ jar {
 	} {
 		exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
 	}
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java']
+        }
+        resources {
+            srcDirs = ['src/main/resources']
+        }
+    }
+    test {
+        java {
+            srcDirs = ['src/test/java']
+        }
+        resources {
+            srcDirs = ['src/test/resources']
+        }
+    }
+}
+
+artifacts {
+    archives jar
+    archives sourcesJar
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+        }
+    }
 }
