@@ -45,7 +45,12 @@ class TestCRC {
 	List<DynamicTest> createCRCTests() {
 		ArrayList<DynamicTest> tests = new ArrayList<>();
 		for(File f : RESOURCES) {
-			tests.add(DynamicTest.dynamicTest("CRC " + f.getName(), () -> assertEquals(Integer.parseUnsignedInt(f.getName(), 16), new CRCTester(new FileInputStream(f)).test())));
+			if(f.getName().endsWith(".mail")) { //mail data is crc'd in base64, so we must use base64 decoder
+				tests.add(DynamicTest.dynamicTest("CRC " + f.getName(), () -> assertEquals(Integer.parseUnsignedInt(f.getName(), 16), new CRCTester(new FileInputStream(f)).test())));
+			}
+			else { //all other resources
+				tests.add(DynamicTest.dynamicTest("CRC " + f.getName(), () -> assertEquals(Integer.parseUnsignedInt(f.getName(), 16), CRCTester.test(new FileInputStream(f).readAllBytes()))));
+			}
 		}
 		return tests;
 	}
