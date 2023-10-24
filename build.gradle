@@ -24,12 +24,13 @@ dependencies {
 	shadow group: 'commons-io', name: 'commons-io', version: '2.14.0'
 	shadow group: 'commons-codec', name: 'commons-codec', version: '1.16.0'
 	shadow group: 'javax.activation', name: 'javax.activation-api', version: '1.2.0'
+	
+	testImplementation group: 'org.junit.jupiter', name:'junit-jupiter-api', version: '5.8.1'
+	testRuntimeOnly group: 'org.junit.jupiter', name :'junit-jupiter-engine', version: '5.8.1'
 }
 
-configurations.all {
-	resolutionStrategy {
-		
-	}
+configurations.testImplementation {
+    extendsFrom(configurations.shadow)
 }
 
 shadowJar {
@@ -42,6 +43,10 @@ shadowJar {
 	exclude 'META-INF/NOTICE.txt'
 	exclude 'META-INF/DEPENDENCIES'
 	exclude 'LICENSE.txt'
+}
+
+test {
+	useJUnitPlatform()
 }
 
 task sourcesJar(type: Jar) {
