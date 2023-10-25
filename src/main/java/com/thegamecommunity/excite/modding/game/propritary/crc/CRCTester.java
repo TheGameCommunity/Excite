@@ -1,7 +1,10 @@
 package com.thegamecommunity.excite.modding.game.propritary.crc;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.util.Base64;
 
 import org.apache.commons.codec.binary.Hex;
@@ -16,14 +19,39 @@ public class CRCTester {
 
 	private final @Unsigned byte[] bytes;
 	
-	public CRCTester(InputStream inputStream) throws IOException {
+	@Deprecated
+	public CRCTester(InputStream inputStream) throws IOException { //for wii mail
 		this(Base64.getMimeDecoder().decode(IOUtils.toByteArray(inputStream)));
 	}
 	
+	@Deprecated
 	public CRCTester(byte[] bytes) {
 		this.bytes = bytes;
 	}
 	
+	@Deprecated
+	public CRCTester(byte[] bytes, int position, int limit) {
+		this(ByteBuffer.wrap(bytes), position, limit);
+	}
+	
+	@Deprecated
+	public CRCTester(ByteBuffer buffer, int position, int limit) {
+		this(ripBytes(buffer, position, limit));
+	}
+	
+	public static int test(byte[] bytes) {
+		return new CRCTester(bytes).test();
+	}
+	
+	public static int test(byte[] bytes, int position, int limit) {
+		return new CRCTester(bytes, position, limit).test();
+	}
+	
+	public static int test (ByteBuffer buffer, int position, int limit) {
+		CRCTester tester = new CRCTester(buffer, position, limit);
+		System.out.println("AAAA" + tester.bytes.length);
+		return tester.test();
+	}
 	
 	/**
 	 * Obtains the Excitebots CRC of the input.
@@ -35,31 +63,28 @@ public class CRCTester {
 	public @Unsigned int test() {
 		int pointer = 0;
 		int length = bytes.length;
+		
 		@Unsigned int crc = POLYNOMIALS[128]; //set the initial value to 0x690ce0ee
 
 		
-		if(3 < length) { //if the bytes to be CRC'd is 4 bytes or more, instead set the initial value by the inverse of the first 4 byte word
-			crc = ~((int)bytes[0] << 0x18 | (int)bytes[1] << 0x10 | (int)bytes[2] << 8 | (int)bytes[3]);
+		if(3 < length) {
+			System.out.println(bytes[0]);
+			System.out.println(bytes[1]);
+			System.out.println(bytes[2]);
+			System.out.println(bytes[3]);
+			crc = ~(toUnsignedByte(bytes[0]) << 24 | toUnsignedByte(bytes[1]) << 16| toUnsignedByte(bytes[2]) << 8| toUnsignedByte(bytes[3]));
 			pointer = pointer + 4;
 		}
-		
-		int bytesRemaining = (length - pointer) / 8;
-		
-		while(bytesRemaining > 0 && pointer < length) { //CRC in chunks of 8 bytes, doing the first 3 bytes stupidly (shift 24), and the last 5 even more stupidly (shift 22 / 4).
-			crc = (crc << 8 | toUnsignedByte(bytes[pointer++])) ^ POLYNOMIALS[crc >>> 24];
-			crc = (crc << 8 | toUnsignedByte(bytes[pointer++])) ^ POLYNOMIALS[crc >>> 24];
-			crc = (crc << 8 | toUnsignedByte(bytes[pointer++])) ^ POLYNOMIALS[crc >>> 24];
-			crc = (crc << 8 | toUnsignedByte(bytes[pointer++])) ^ POLYNOMIALS[(crc >>> 22) / 4];
-			crc = (crc << 8 | toUnsignedByte(bytes[pointer++])) ^ POLYNOMIALS[(crc >>> 22) / 4];
-			crc = (crc << 8 | toUnsignedByte(bytes[pointer++])) ^ POLYNOMIALS[(crc >>> 22) / 4];
-			crc = (crc << 8 | toUnsignedByte(bytes[pointer++])) ^ POLYNOMIALS[(crc >>> 22) / 4];
-			crc = (crc << 8 | toUnsignedByte(bytes[pointer++])) ^ POLYNOMIALS[(crc >>> 22) / 4];
-			bytesRemaining--;
+		System.out.println(Integer.toHexString(crc));
+		while(pointer < length) {
+			crc = (crc << 8 | toUnsignedByte(bytes[pointer])) ^ POLYNOMIALS[(crc >>> 24)];
+			if(length - pointer < 100) {
+				System.out.println(Integer.toHexString(crc) + " " + Integer.toHexString(bytes[pointer]));
+			}
+			pointer++;
 		}
-		while(pointer < length) { //CRC any remaining bytes that won't fit in chunks of 8 bytes using but shift 24
-			crc = (crc << 8 | toUnsignedByte(bytes[pointer++])) ^ POLYNOMIALS[crc >>> 24];
-		}
-		
+		System.out.println("FINAL: " + Integer.toHexString(crc));
+		System.out.println("INVERSE: " + Integer.toHexString(~crc));
 		return ~crc;
 	}
 	
@@ -71,6 +96,31 @@ public class CRCTester {
 	@SuppressWarnings("unused")
 	private String toHexString(int i) { //for testing
 		return Integer.toHexString(i);
+	}
+	
+	/**
+	 * Reads bytes from the provided buffer, starting at 'start' and ending at 'limit'
+	 * 
+	 * The buffer's position will be unchanged after this method finishes.
+	 * 
+	 * @param buffer the buffer to read from
+	 * @param start the starting index
+	 * @param limit the ending position
+	 * @return a byte array containing the bytes between start and limit
+	 */
+	private static byte[] ripBytes(ByteBuffer buffer, int start, int limit) {
+		System.out.println("BBBB" + buffer.capacity());
+		byte[] ret = new byte[limit - start];
+		System.out.println("BBBB" + ret.length);
+		int position = buffer.position();
+		buffer.position(start);
+		System.out.println(buffer.position() + " " + buffer.limit());
+		for(int i = 0; i < ret.length; i++) {
+			ret[i] = buffer.get();
+		}
+		dump(ret);
+		buffer.position(position);
+		return ret;
 	}
 	
 	private static @Unsigned int toUnsignedByte(@Signed byte b) {
@@ -112,6 +162,32 @@ public class CRCTester {
 			0x89B8FD09, 0x8D79E0BE, 0x803AC667, 0x84FBDBD0, 0x9ABC8BD5, 0x9E7D9662, 0x933EB0BB, 0x97FFAD0C, // 240 [0xF0 .. 0xF7]
 			0xAFB010B1, 0xAB710D06, 0xA6322BDF, 0xA2F33668, 0xBCB4666D, 0xB8757BDA, 0xB5365D03, 0xB1F740B4, // 248 [0xF8 .. 0xFF]
 		};
+	}
+	
+	private static void dump(byte[] bytes) {
+		dump(bytes, null);
+	}
+	
+	private static void dump(byte[] bytes , String suffix) {
+		if(suffix == null) {
+			suffix = "";
+		}
+		if(!suffix.isEmpty()) {
+			suffix = "." + suffix;
+		}
+		try {
+			File file = new File("./run/crcDump" + suffix + ".dump");
+			if(!file.exists()) {
+				file.getParentFile().mkdirs();
+				file.createNewFile();
+			}
+			FileOutputStream fos = new FileOutputStream(file);
+			fos.write(bytes);
+			fos.close();
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 }

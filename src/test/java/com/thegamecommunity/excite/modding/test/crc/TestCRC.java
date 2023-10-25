@@ -4,11 +4,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.io.FilenameUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
@@ -29,11 +31,7 @@ class TestCRC {
 	
 	@BeforeAll
 	static void checkTestFilesExist() throws IOException {
-		for(File f : RESOURCES) {
-			if(f.isDirectory()) {
-				RESOURCES.remove(f);
-			}
-		}
+		RESOURCES.removeIf((f) -> f.isDirectory());
 		System.out.println("Found " + RESOURCES.size() + " resources to CRC:\n");
 		for(File f : RESOURCES) {
 			System.out.println(f.getCanonicalPath());
@@ -42,14 +40,30 @@ class TestCRC {
 	}
 	
 	@TestFactory
-	List<DynamicTest> createCRCTests() {
+	List<DynamicTest> createCRCTests() throws FileNotFoundException, IOException {
 		ArrayList<DynamicTest> tests = new ArrayList<>();
 		for(File f : RESOURCES) {
+			String name = FilenameUtils.removeExtension(f.getName());
 			if(f.getName().endsWith(".mail")) { //mail data is crc'd in base64, so we must use base64 decoder
-				tests.add(DynamicTest.dynamicTest("CRC " + f.getName(), () -> assertEquals(Integer.parseUnsignedInt(f.getName(), 16), new CRCTester(new FileInputStream(f)).test())));
+				tests.add(
+					DynamicTest.dynamicTest("CRC " + f.getName(), 
+						() -> {
+							System.out.println("CRCing file " + f.getName());
+							assertEquals(Integer.parseUnsignedInt(name, 16), new CRCTester(new FileInputStream(f)).test());
+						}
+					)
+				);
 			}
 			else { //all other resources
-				tests.add(DynamicTest.dynamicTest("CRC " + f.getName(), () -> assertEquals(Integer.parseUnsignedInt(f.getName(), 16), CRCTester.test(new FileInputStream(f).readAllBytes()))));
+				CRCTester tester = new CRCTester(new FileInputStream(f).readAllBytes());
+				tests.add(
+					DynamicTest.dynamicTest("CRC " + f.getName(), 
+						() -> {
+							System.out.println("CRCing file " + f.getName());
+							assertEquals(Integer.parseUnsignedInt(name, 16), tester.test());
+						}
+					)
+				);
 			}
 		}
 		return tests;

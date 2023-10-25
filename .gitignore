@@ -33,3 +33,14 @@ logs/*
 
 #Built Jar
 ExciteBot*.jar
+
+#Propritary - Third party copyrighted files
+*.toc
+*.trk
+*.res
+*.car
+*.sng
+*.bnr
+*.thp
+*zz
+*.zzz
