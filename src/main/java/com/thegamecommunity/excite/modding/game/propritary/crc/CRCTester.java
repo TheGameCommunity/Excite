@@ -68,10 +68,6 @@ public class CRCTester {
 
 		
 		if(3 < length) {
-			System.out.println(bytes[0]);
-			System.out.println(bytes[1]);
-			System.out.println(bytes[2]);
-			System.out.println(bytes[3]);
 			crc = ~(toUnsignedByte(bytes[0]) << 24 | toUnsignedByte(bytes[1]) << 16| toUnsignedByte(bytes[2]) << 8| toUnsignedByte(bytes[3]));
 			pointer = pointer + 4;
 		}
@@ -83,8 +79,6 @@ public class CRCTester {
 			}
 			pointer++;
 		}
-		System.out.println("FINAL: " + Integer.toHexString(crc));
-		System.out.println("INVERSE: " + Integer.toHexString(~crc));
 		return ~crc;
 	}
 	
