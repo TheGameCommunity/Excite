@@ -1,3 +1,24 @@
+Date: 11 Aug 2021 03:28:19 -0000
+From: w0633303276188884@rc24.xyz
+To: w1056185520598803@rc24.xyz
+Message-Id: <0011500023FFC68CFF4D403CFF670@rc24.xyz>
+X-Wii-AppId: 1-52583345-0001
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+ boundary="Boundary-NWC24-03CFF67000115"
+
+--Boundary-NWC24-03CFF67000115
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+ver=2 type=5265706c crc=30fe92e4 
+--Boundary-NWC24-03CFF67000115
+Content-Type: application/octet-stream;
+ name=a0000277.dat
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename=a0000277.dat
+
 Q29tcCuHeHYAAExWAAEK9BH0CgEAUmVwbAAAAA0AQlJPTlpFIEMASElOQSBCIFIDQU5LIFBCIBkB
 0AJAASBLUEJ1c3RlUHIAwDsNIHMC////WP8gewQCAGUQAqAwYQWiSHPhrwABIbU/TMUAeT9RD28/
 EJYAUz8GusI+SlIAXD6SI1Y+FcUAwD4phpg/e1wAFD8EY34/CnwAsz84wMU/d0EArj1f6DA+BSIA
@@ -342,3 +363,7 @@ AmQwAl9lMAItXWRAAmNAAkALX0ACd10gGnApsDVoJRglHlBf30BlUFNkQAJlOST0QG4gdHxfQAJQ
 TWBTIIZwHWZonTACaGdAAkA1UAtkAYACf2FAAmBNsO9ARFEHYPtwLIkgMmZmJCACZGwwAiJhbTAC
 aGsgIAJfhCakXyBhaTACXW6KIAIhX2RAAl8gAiAkWWQwAltlMAJdYJcwAlteQAJfoAIgFCAXSGcw
 AgAAFdRAAQ==
+
+
+--Boundary-NWC24-03CFF67000115--
+

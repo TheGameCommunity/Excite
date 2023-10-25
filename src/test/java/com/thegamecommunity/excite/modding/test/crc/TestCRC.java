@@ -10,11 +10,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.mail.internet.MimeMessage;
+
 import org.apache.commons.io.FilenameUtils;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 
+import com.thegamecommunity.excite.modding.game.mail.ExciteMail;
+import com.thegamecommunity.excite.modding.game.mail.Mail;
 import com.thegamecommunity.excite.modding.game.propritary.crc.CRCTester;
 
 class TestCRC {
@@ -44,12 +49,16 @@ class TestCRC {
 		ArrayList<DynamicTest> tests = new ArrayList<>();
 		for(File f : RESOURCES) {
 			String name = FilenameUtils.removeExtension(f.getName());
-			if(f.getName().endsWith(".mail")) { //mail data is crc'd in base64, so we must use base64 decoder
+			if(f.getName().endsWith(".email")) { //mail data is crc'd in base64, so we must use base64 decoder
 				tests.add(
 					DynamicTest.dynamicTest("CRC " + f.getName(), 
 						() -> {
-							System.out.println("CRCing file " + f.getName());
-							assertEquals(Integer.parseUnsignedInt(name, 16), new CRCTester(new FileInputStream(f)).test());
+							System.out.println("CRCing mail " + f.getName());
+							Mail mail = (Mail) Mail.getMail(new MimeMessage(null, new FileInputStream(f)));
+							Assumptions.assumeTrue(mail instanceof ExciteMail);
+
+							ExciteMail exMail = (ExciteMail) mail;
+							assertEquals(exMail.getCRC(), new CRCTester(exMail.getDataPart().getInputStream()).test());
 						}
 					)
 				);

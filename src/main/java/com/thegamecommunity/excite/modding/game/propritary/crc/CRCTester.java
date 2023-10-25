@@ -13,15 +13,21 @@ import org.apache.commons.io.IOUtils;
 import com.thegamecommunity.excite.modding.game.cLanguage.Signed;
 import com.thegamecommunity.excite.modding.game.cLanguage.Unsigned;
 
+import com.sun.mail.util.BASE64DecoderStream;
+
 public class CRCTester {
 	
 	public static final @Unsigned int[] POLYNOMIALS = getCRC32Table();
 
 	private final @Unsigned byte[] bytes;
 	
+	public CRCTester(BASE64DecoderStream base64Stream) throws IOException { //for wii mail
+		this(IOUtils.toByteArray(base64Stream));
+	}
+	
 	@Deprecated
 	public CRCTester(InputStream inputStream) throws IOException { //for wii mail
-		this(Base64.getMimeDecoder().decode(IOUtils.toByteArray(inputStream)));
+		this(inputStream instanceof BASE64DecoderStream ? IOUtils.toByteArray(inputStream) : Base64.getMimeDecoder().decode(IOUtils.toByteArray(inputStream)));
 	}
 	
 	@Deprecated
@@ -71,12 +77,8 @@ public class CRCTester {
 			crc = ~(toUnsignedByte(bytes[0]) << 24 | toUnsignedByte(bytes[1]) << 16| toUnsignedByte(bytes[2]) << 8| toUnsignedByte(bytes[3]));
 			pointer = pointer + 4;
 		}
-		System.out.println(Integer.toHexString(crc));
 		while(pointer < length) {
 			crc = (crc << 8 | toUnsignedByte(bytes[pointer])) ^ POLYNOMIALS[(crc >>> 24)];
-			if(length - pointer < 100) {
-				System.out.println(Integer.toHexString(crc) + " " + Integer.toHexString(bytes[pointer]));
-			}
 			pointer++;
 		}
 		return ~crc;

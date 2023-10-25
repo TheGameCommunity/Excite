@@ -1,0 +1,1 @@
+package com.thegamecommunity.excite.modding.game.mail;
