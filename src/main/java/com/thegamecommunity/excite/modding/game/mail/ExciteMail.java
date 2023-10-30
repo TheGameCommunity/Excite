@@ -2,13 +2,12 @@ package com.thegamecommunity.excite.modding.game.mail;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.mail.BodyPart;
 import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
+import javax.mail.Part;
 import javax.mail.internet.MimeMultipart;
 
 public class ExciteMail extends WiiMail {
@@ -20,7 +19,7 @@ public class ExciteMail extends WiiMail {
 	protected final int type;
 	protected final int crc;
 	
-	public ExciteMail(MimeMessage message) throws MessagingException, IOException {
+	public ExciteMail(Part message) throws MessagingException, IOException {
 		super(message);
 		if(!this.getAppID().startsWith(Mail.EXCITEBOTS_ID)) {
 			throw new AssertionError();
@@ -29,7 +28,6 @@ public class ExciteMail extends WiiMail {
 		System.out.println(checkData);
 		Matcher matcher = CHECK_PATTERN.matcher(checkData);
 		matcher.find();
-		MatchResult result = matcher.toMatchResult();
 		version = Integer.parseInt(matcher.group("ver"));
 		type = Integer.parseUnsignedInt(matcher.group("type"), 16);
 		crc = Integer.parseUnsignedInt(matcher.group("crc"), 16);

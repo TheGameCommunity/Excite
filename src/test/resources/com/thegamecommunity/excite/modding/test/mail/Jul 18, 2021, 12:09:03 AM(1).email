@@ -1,0 +1,30 @@
+Date: 18 Jul 2021 00:08:44 -0000
+From: w0633303276188884@rc24.xyz
+To: w1056185520598803@rc24.xyz
+Message-Id: <000E200023FFC68CFF4D403CF6EA8@rc24.xyz>
+Subject: WC24 Cmd Message
+X-Wii-AppId: 0-00000001-0001
+X-Wii-Cmd: 80010001
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+ boundary="Boundary-NWC24-03CF6EA8000E2"
+
+--Boundary-NWC24-03CF6EA8000E2
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+WC24 Cmd Message
+--Boundary-NWC24-03CF6EA8000E2
+Content-Type: application/octet-stream;
+ name=a0000226.dat
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename=a0000226.dat
+
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAA=
+
+
+--Boundary-NWC24-03CF6EA8000E2--
+

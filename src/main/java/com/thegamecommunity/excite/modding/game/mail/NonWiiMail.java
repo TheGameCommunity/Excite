@@ -1,10 +1,10 @@
 package com.thegamecommunity.excite.modding.game.mail;
 
-import javax.mail.internet.MimeMessage;
+import javax.mail.Part;
 
 public class NonWiiMail extends Mail {
 
-	protected NonWiiMail(MimeMessage message) {
+	protected NonWiiMail(Part message) {
 		super(message);
 	}
 
