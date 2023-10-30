@@ -21,12 +21,12 @@ version = "${project.version}"
 
 dependencies {
 	shadow group: 'org.apache.commons', name: 'commons-text', version: '1.10.0'
-	shadow group: 'commons-io', name: 'commons-io', version: '2.14.0'
+	shadow group: 'commons-io', name: 'commons-io', version: '2.15.0'
 	shadow group: 'commons-codec', name: 'commons-codec', version: '1.16.0'
 	shadow group: 'javax.activation', name: 'javax.activation-api', version: '1.2.0'
 	shadow group: 'com.sun.mail', name: 'javax.mail', version: '1.6.2'
 	
-	testImplementation group: 'org.junit.jupiter', name:'junit-jupiter-api', version: '5.8.1'
+	testImplementation group: 'org.junit.jupiter', name:'junit-jupiter-api', version: '5.10.0'
 	testRuntimeOnly group: 'org.junit.jupiter', name :'junit-jupiter-engine', version: '5.8.1'
 }
 
