@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import javax.mail.internet.MimeMessage;
+import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Part;
 
@@ -34,6 +35,10 @@ public abstract class Mail {
 		Mail mail = getMail(new MimeMessage(null, i));
 		i.close();
 		return mail;
+	}
+	
+	public Message getAsMessage() {
+		return (Message)this.message;
 	}
 	
 	public static Mail getMail(Part message) throws MessagingException, IOException {
