@@ -42,14 +42,11 @@ public class WC24MultiMessage extends Mail {
 		int mailsize = 0;
 		int allnum = 0;
 		
-		
-		MimeMultipart multipart = (MimeMultipart) message.getContent();
-		
 		{
 			String content;
 			{
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				multipart.writeTo(baos);
+				message.writeTo(baos);
 				content = new String(baos.toByteArray());
 			}
 			
@@ -100,7 +97,9 @@ public class WC24MultiMessage extends Mail {
 		checkValid();
 		
 		WiiMail[] messages = new WiiMail[mailnum];
+		
 		for(int i = 0; i < mailnum; i++) {
+			MimeMultipart multipart = (MimeMultipart) message.getContent();
 			BodyPart part = multipart.getBodyPart(i);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			part.writeTo(baos);
@@ -133,8 +132,8 @@ public class WC24MultiMessage extends Mail {
 		if(!msg.equals("Success.")) {
 			throw new MessagingException("Non-successful status message. Got (" + msg + ")");
 		}
-		if(mailnum < 1) {
-			throw new MessagingException("Less than one mail object: " + mailnum);
+		if(mailnum < 0) {
+			throw new MessagingException("Less than zero mail objects: " + mailnum);
 		}
 		if(mailnum > 999) {
 			throw new MessagingException("More than 999 mail objects! " + mailnum);
