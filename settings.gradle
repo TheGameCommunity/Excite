@@ -6,4 +6,9 @@
  */
 
 rootProject.name = 'excite'
-include('lib')
+
+sourceControl {
+	gitRepository('https://github.com/TheGameCommunity/quicklz.git') {
+		producesModule('com.quicklz:quicklz')
+	}
+}
