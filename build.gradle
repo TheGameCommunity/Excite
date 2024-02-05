@@ -28,7 +28,7 @@ dependencies {
 	
 	/* FOR LEGAL REASONS, DO NOT SHADOW THIS DEPENDENCY */ implementation group: 'com.quicklz', name: 'quicklz', version: 'TGC-1.5.0.0'
 	
-	testImplementation group: 'org.junit.jupiter', name:'junit-jupiter-api', version: '5.10.1'
+	testImplementation group: 'org.junit.jupiter', name:'junit-jupiter-api', version: '5.10.2'
 	testRuntimeOnly group: 'org.junit.jupiter', name :'junit-jupiter-engine', version: '5.8.1'
 }
 
