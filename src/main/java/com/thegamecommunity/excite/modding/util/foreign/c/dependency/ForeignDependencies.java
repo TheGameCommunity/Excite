@@ -55,7 +55,7 @@ public enum ForeignDependencies {
 	
 	public Path write(boolean overwrite) throws IOException {
 		Path dest = cSourceDir.resolve(getFileName() + ".c").toAbsolutePath();
-		if(!(Files.exists(dest) || Files.exists(getCompiledLocation()))|| overwrite) {
+		if(!(Files.exists(dest) || Files.exists(getCompiledLocation())) || overwrite) {
 			System.out.println("Downloading " + name + ":\nFrom: " + url + "\nInto: " + dest);
 			FileUtils.copyInputStreamToFile(getURL().openStream(), dest.toFile());
 		}
@@ -130,10 +130,15 @@ public enum ForeignDependencies {
 		return new File(versionRegex.matcher(dest).replaceAll(getVersion())).getAbsoluteFile();
 	}
 	
+	public static void downloadAndCompileAllDeps() throws IOException, InterruptedException, LinkageError {
+		downloadAndCompileAllDeps(true);
+	}
+	
 	public static void downloadAndCompileAllDeps(boolean overwrite) throws IOException, InterruptedException, LinkageError {
 		HashMap<ForeignDependencies, Path> deps = new HashMap<>();
+		
 		for(ForeignDependencies dep : values()) {
-			Path f = dep.write(true);
+			Path f = dep.write(overwrite);
 			if(f != null) {
 				deps.put(dep, f);
 			}

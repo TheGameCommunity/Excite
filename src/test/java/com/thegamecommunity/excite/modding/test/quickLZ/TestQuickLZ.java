@@ -16,7 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.io.TempDir;
 
-import com.thegamecommunity.excite.modding.util.foreign.c.CLangCompiler;
+import com.thegamecommunity.excite.modding.util.foreign.c.dependency.ForeignDependencies;
+import static com.thegamecommunity.excite.modding.util.foreign.c.dependency.ForeignDependencies.*;
 
 @TestMethodOrder(OrderAnnotation.class)
 class TestQuickLZ {
@@ -31,32 +32,30 @@ class TestQuickLZ {
 		compiledFile = testDir.resolve("Equicklz").toAbsolutePath();
 	}
 	
-	@Test
+	@Test()
 	@Order(1)
-	void compileQuickLZ() throws IOException, InterruptedException {
-		Files.copy(getClass().getResourceAsStream("/Equicklz.c"), uncompiledFile);
-		CLangCompiler compiler = CLangCompiler.get();
-		compiler.compile(uncompiledFile, compiledFile);
+	void downloadandCompileEQuickLZ() throws IOException, InterruptedException, LinkageError {
+		ForeignDependencies.downloadAndCompileAllDeps(true);
 	}
 	
 	@Test
 	@Order(2)
 	void testCompiledFileExists() throws IOException, InterruptedException {
-		assertTrue(Files.exists(compiledFile));
+		assertTrue(Files.exists(EQUICKLZ.getCompiledLocation()));
 	}
 	
 	@Test
 	@Order(3)
 	void testHelp() throws InterruptedException, IOException, ExecutionException, TimeoutException {
-		Process process = startProcess(compiledFile.toString(), "help");
-		assertTrue(process.exitValue() == 2);
+		Process process = startProcess(EQUICKLZ.getCompiledLocation().toAbsolutePath().toString(), "help");
+		assertTrue(process.exitValue() == 1);
 	}
 	
 	@Test
 	@Order(4)
-	void testSegFault() throws InterruptedException, ExecutionException, TimeoutException, IOException {
-		Process process = startProcess(compiledFile.toString());
-		assertTrue(process.exitValue() == 139);
+	void testNoArgs() throws InterruptedException, ExecutionException, TimeoutException, IOException {
+		Process process = startProcess(EQUICKLZ.getCompiledLocation().toAbsolutePath().toString());
+		assertTrue(process.exitValue() == 3);
 	}
 	
 	private static Process startProcess(String... command) throws InterruptedException, ExecutionException, TimeoutException, IOException {
