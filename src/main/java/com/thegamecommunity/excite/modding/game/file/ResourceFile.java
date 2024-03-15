@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 
 public interface ResourceFile {
 	
-	public byte[] getHeader();
+	public ByteBuffer getRawBytes();
 	
 	public ByteBuffer getResourceBytes();
 	

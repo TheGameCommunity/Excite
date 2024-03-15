@@ -11,6 +11,8 @@ public class LinuxCCompiler implements CLangCompiler {
 		process.inheritIO().redirectErrorStream(true);
 		int exitCode = -1000;
 		
+		System.out.println("compiling " + source.toAbsolutePath() + " to " + dest.toAbsolutePath());
+		
 		try {
 			exitCode = process.start().waitFor();
 		} catch (InterruptedException e) {
