@@ -5,8 +5,8 @@ public class Math {
 	/**
 	 * Calculates the closest multiple of a given number (m) to another number (n) that is greater than or equal to n.
 	 *
-	 * @param n the number to find the closest multiple of m to. Must be non-negative.
-	 * @param m the multiple to consider. Must be non-negative.
+	 * @param m the number to find the closest multiple of m to. Must be non-negative.
+	 * @param n the multiple to consider. Must be non-negative.
 	 * @return the closest multiple of m to n that is greater than or equal to n
 	 * @throws ArithmeticException if either n or m is negative
 	 *
@@ -21,14 +21,14 @@ public class Math {
 	 * </pre>
 	 */
 	public static int nearestMultiple(int n, int m) throws ArithmeticException {
-	    if (n < 0) {
+	    if (m < 0) {
 	        throw new ArithmeticException("number cannot be negative");
 	    }
-	    if(m < 0) {
+	    if(n < 0) {
 	    	throw new ArithmeticException("multiple cannot be negative");
 	    }
 
-	    return n == 0 ? 0 : n == m ? m : ((m + (n - 1)) / n) * n;
+	    return m == 0 ? 0 : m == n ? n : ((n + (m - 1)) / m) * m;
 	}
 	
 }
