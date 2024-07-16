@@ -18,7 +18,7 @@ version = "${project.version}"
 dependencies {
 	shadow group: 'org.apache.commons', name: 'commons-text', version: '1.12.0'
 	shadow group: 'commons-io', name: 'commons-io', version: '2.16.1'
-	shadow group: 'commons-codec', name: 'commons-codec', version: '1.17.0'
+	shadow group: 'commons-codec', name: 'commons-codec', version: '1.17.1'
 	shadow group: 'javax.activation', name: 'javax.activation-api', version: '1.2.0'
 	shadow group: 'com.sun.mail', name: 'javax.mail', version: '1.6.2'
 	
