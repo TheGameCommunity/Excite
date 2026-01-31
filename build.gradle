@@ -9,8 +9,11 @@ repositories {
 	mavenCentral()
 }
 
-sourceCompatibility = 21
-targetCompatibility = 21
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
 
 group = 'com.thegamecommunity'
 version = "${project.version}"
