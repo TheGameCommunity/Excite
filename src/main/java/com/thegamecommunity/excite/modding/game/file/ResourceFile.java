@@ -1,18 +1,19 @@
 package com.thegamecommunity.excite.modding.game.file;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 
 public interface ResourceFile {
 	
-	public ByteBuffer getRawBytes();
+	public ByteBuffer getRawBytes() throws IOException;
 	
-	public ByteBuffer getResourceBytes();
+	public ByteBuffer getHeaderBytes() throws IOException;
 	
-	public boolean isCompressed();
+	public ByteBuffer getResourceBytes() throws IOException;
 	
-	public default ResourceDecompressor getDecompressor() {
-		return new UncompressedDecompressor(this);
-	};
+	public boolean isCompressedArchive() throws IOException;
+	
+	public ResourceDecompressor getDecompressor();
 	
 	
 	

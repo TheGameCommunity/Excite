@@ -1,9 +1,10 @@
 package com.thegamecommunity.excite.modding.game.file;
 
-import java.nio.ByteBuffer;
+import java.io.IOException;
+import java.nio.file.Path;
 
 public interface ResourceDecompressor {
 
-	public ByteBuffer decompress();
+	public Path decompress() throws IOException;
 	
 }

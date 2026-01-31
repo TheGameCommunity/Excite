@@ -27,6 +27,7 @@ public enum ForeignDependencies {
 	
 	public static final Path cSourceDir = Path.of("./run/deps/src").toAbsolutePath();
 	public static final Path cCompileDir = Path.of("./run/deps/bin").toAbsolutePath();
+	private static boolean downloadedAndCompiled = false;
 	
 	static {
 		try {
@@ -42,6 +43,7 @@ public enum ForeignDependencies {
 	private final String url;
 	private final String dest;
 	private final Pattern obtainVersionRegex;
+	private boolean available = false;
 	
 	private static final Pattern versionRegex = Pattern.compile("@.*?@");
 	
@@ -130,23 +132,42 @@ public enum ForeignDependencies {
 		return new File(versionRegex.matcher(dest).replaceAll(getVersion())).getAbsoluteFile();
 	}
 	
-	public static void downloadAndCompileAllDeps() throws IOException, InterruptedException, LinkageError {
+	public boolean isAvailable() {
+		return available;
+	}
+	
+	public static void downloadAndCompileAllDeps() throws LinkageError {
 		downloadAndCompileAllDeps(true);
 	}
 	
-	public static void downloadAndCompileAllDeps(boolean overwrite) throws IOException, InterruptedException, LinkageError {
-		HashMap<ForeignDependencies, Path> deps = new HashMap<>();
-		
-		for(ForeignDependencies dep : values()) {
-			Path f = dep.write(overwrite);
-			if(f != null) {
-				deps.put(dep, f);
+	public static void downloadAndCompileAllDeps(boolean overwrite) throws LinkageError {
+		if(!downloadedAndCompiled) {
+			HashMap<ForeignDependencies, Path> deps = new HashMap<>();
+			
+			for(ForeignDependencies dep : values()) {
+				try {
+					Path f = dep.write(overwrite);
+					if(f != null) {
+						deps.put(dep, f);
+					}
+				}
+				catch(Throwable t) {
+					System.err.println("Could not download " + dep + ". If it's already downloaded then the program can proceed, otherwise an error will probably occur.");
+				}
 			}
-		}
-		
-		CLangCompiler compiler = CLangCompiler.get();
-		for(Entry<ForeignDependencies, Path> e : deps.entrySet()) {
-			compiler.compile(e.getValue(), (e.getKey().getCompiledLocation()));
+			
+			CLangCompiler compiler = CLangCompiler.get();
+			for(Entry<ForeignDependencies, Path> e : deps.entrySet()) {
+				try {
+					compiler.compile(e.getValue(), (e.getKey().getCompiledLocation()));
+					e.getKey().available = true;
+				} catch (Throwable ex) {
+					LinkageError ex2 = new LinkageError();
+					ex2.initCause(ex);
+					throw ex2;
+				}
+			}
+			downloadedAndCompiled = true;
 		}
 	}
 
